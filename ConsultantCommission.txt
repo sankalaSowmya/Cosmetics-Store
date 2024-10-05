@@ -1,0 +1,16 @@
+public class ConsultantCommissionCalculator {
+    // Method to calculate commission based on performance score
+    public static Decimal calculateCommission(Id consultantId) {
+        Consultant__c consultant = [SELECT Performance_Score__c, Commission_Percentage__c FROM Consultant__c WHERE Id = :consultantId];
+        Decimal commission = consultant.Performance_Score__c * consultant.Commission_Percentage__c / 100;
+        return commission;
+    }
+
+    // Method to update consultant record with calculated commission
+    public static void updateCommission(Id consultantId) {
+        Consultant__c consultant = [SELECT Id, Performance_Score__c, Commission_Percentage__c FROM Consultant__c WHERE Id = :consultantId];
+        Decimal commission = calculateCommission(consultantId);
+        consultant.Commission_Amount__c = commission;
+        update consultant;
+    }
+}

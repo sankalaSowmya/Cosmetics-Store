@@ -1,0 +1,23 @@
+public class RetailerStockUpdater {
+    // Method to update stock for a retailer
+    public static void updateStock(Id retailerId, Integer newStock) {
+        Retailer__c retailer = [SELECT Id, Stock_Provided__c FROM Retailer__c WHERE Id = :retailerId];
+        retailer.Stock_Provided__c = newStock;
+        update retailer;
+
+        // Check if stock is below threshold
+        if (newStock < 50) {
+            sendStockLowNotification(retailerId);
+        }
+    }
+
+    // Method to send notification when stock is low
+    private static void sendStockLowNotification(Id retailerId) {
+        Retailer__c retailer = [SELECT Name FROM Retailer__c WHERE Id = :retailerId];
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        mail.setToAddresses(new String[] {'store@cosmetics.com'});
+        mail.setSubject('Stock Alert for Retailer: ' + retailer.Name);
+        mail.setPlainTextBody('The stock for ' + retailer.Name + ' is running low. Please restock as soon as possible.');
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+    }
+}

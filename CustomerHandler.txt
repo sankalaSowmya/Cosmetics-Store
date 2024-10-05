@@ -1,0 +1,18 @@
+public class CustomerHandler {
+    // Method to create a new customer record
+    public static void createCustomer(String customerName, String contactNumber, String email) {
+        Customer__c newCustomer = new Customer__c();
+        newCustomer.Name = customerName;
+        newCustomer.Contact_Number__c = contactNumber;
+        newCustomer.Email__c = email;
+        newCustomer.Loyalty_Status__c = 'Bronze';  // Default loyalty status
+        insert newCustomer;
+    }
+
+    // Method to update customer loyalty status
+    public static void updateLoyaltyStatus(Id customerId, String newStatus) {
+        Customer__c customer = [SELECT Id, Loyalty_Status__c FROM Customer__c WHERE Id = :customerId];
+        customer.Loyalty_Status__c = newStatus;
+        update customer;
+    }
+}
